@@ -1,0 +1,8 @@
+﻿services:
+  test:
+    build:
+      context: .
+      dockerfile: Test/Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
