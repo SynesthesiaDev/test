@@ -7,9 +7,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
 
-        var version = "Version 1.3.0";
+        var version = "Version 1.4.0";
 
-        app.MapGet("/", () => $"Unit Status: ONLINE | {version} | Time: {DateTime.Now} | IM GAY!! yayyy");
+        app.MapGet("/", () => $"Unit Status: ONLINE | {version} | Time: {DateTime.Now} | This should be updated on my server now yipe!!");
         app.Run();
     }
 }
