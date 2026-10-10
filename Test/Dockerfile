@@ -5,21 +5,20 @@ EXPOSE 8080
 ENV DOTNET_GCLatencyMode=1
 ENV DOTNET_GCHeapHardLimitPercent=10
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Test/Test.csproj", "Test/"]
 RUN dotnet restore "Test/Test.csproj"
 COPY . .
 WORKDIR "/src/Test"
-RUN dotnet build "./Test.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Test.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Test.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=true
+RUN dotnet publish "./Test.csproj" -c $BUILD_CONFIGURATION -o /app/publish --no-restore /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-EXPOSE 8080
 ENTRYPOINT ["dotnet", "Test.dll", "--urls", "http://0.0.0.0:8080"]
